@@ -2,17 +2,17 @@
 <html>
     <head lang="en"> 
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <meta name="description" content="Nostalgic Bounce game from old Nokia phones made in JavaScript.">
         <meta name="keywords" content="Bounce, nokia, game, javascript, js, side-scrolling, tile-based, old-game, clone">
-        <link rel="shortcut icon" type="image/ico" href="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/assets/tile/ball_small.png">
-        <title>Gravity Bounce</title>
+        <link rel="shortcut icon" type="image/ico" href="/code/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/assets/tile/ball_small.png">
+        <title>Bounce Nokia Game Clone</title>
         <style>
 
             @font-face {
                 font-family: 'GameFont';
-                src: url('/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/assets/fonts/YanoneKaffeesatz-Bold.ttf');
+                src: url('/code/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/assets/fonts/YanoneKaffeesatz-Bold.ttf');
             }
 
             body {
@@ -59,20 +59,152 @@
                 left: 5px;
             }
 
+            .game-controls {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                gap: 20px;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 10px;
+                border-radius: 10px;
+            }
+
+            .control-btn {
+                width: 60px;
+                height: 60px;
+                border: none;
+                border-radius: 50%;
+                background: #333;
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+                touch-action: manipulation;
+                -webkit-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .control-btn:active {
+                background: #555;
+            }
+
+            .jump-btn {
+                background: #4CAF50;
+            }
+
+            .fullscreen-btn {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                border: none;
+                border-radius: 8px;
+                background: rgba(0, 0, 0, 0.6);
+                color: white;
+                font-size: 20px;
+                cursor: pointer;
+                z-index: 1000;
+            }
+
+            .fullscreen-btn:hover {
+                background: rgba(0, 0, 0, 0.8);
+            }
+
+            #gameArea.fullscreen {
+                width: 100vw;
+                height: 100vh;
+                max-width: none;
+                max-height: none;
+            }
+
+            #gameArea.fullscreen canvas {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: contain;
+            }
+
+            @media (max-width: 768px) {
+                #gameArea {
+                    width: 100vw;
+                    height: 56.25vw; /* 16:9 aspect ratio */
+                    top: 40%;
+                }
+
+                .game-controls {
+                    bottom: 40px;
+                    padding: 15px;
+                }
+
+                .control-btn {
+                    width: 70px;
+                    height: 70px;
+                    font-size: 28px;
+                }
+
+                #volumeControl {
+                    width: 150px;
+                }
+
+                #playMusic {
+                    padding: 10px 20px;
+                    font-size: 16px;
+                }
+            }
+
+            .audio-controls {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 10px;
+                border-radius: 10px;
+                z-index: 1000;
+            }
+
         </style>
     </head>
     <body>
+        <button id="fullscreenBtn" class="fullscreen-btn">⛶</button>
+        
+        <div class="audio-controls">
+            <button id="playMusic">🎵</button>
+            <input id="volumeControl" type="range" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        
         <div id="gameArea"></div>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/tile.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/sprite.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/input.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/entity.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/enemy.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/player.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/canvas.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/map.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/level.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/game.js"></script>
-        <script src="/Bounce-Nokia-Clone-main/Bounce-Nokia-Clone-main/js/main.js"></script>
+        
+        <div class="game-controls">
+            <button class="control-btn" id="leftBtn">←</button>
+            <button class="control-btn jump-btn" id="jumpBtn">↑</button>
+            <button class="control-btn" id="rightBtn">→</button>
+        </div>
+        <script src="js/utils.js"></script>
+        <script src="js/tile.js"></script>
+        <script src="js/sprite.js"></script>
+        <script src="js/input.js"></script>
+        <script src="js/entity.js"></script>
+        <script src="js/enemy.js"></script>
+        <script src="js/player.js"></script>
+        <script src="js/canvas.js"></script>
+        <script src="js/map.js"></script>
+        <script src="js/level.js"></script>
+        <script src="js/controller.js"></script>
+        <script src="js/game.js"></script>
+        <script src="js/main.js"></script>
+        <script src="js/music.js"></script>
+        <script>
+            this.audio = new Audio("assets/sound/chiptune-techno-polka-218042.mp3");
+        </script>
+        <script src="js/fullscreen.js"></script>
+        <script>
+            // Initialize fullscreen handler
+            const fullscreenHandler = new FullscreenHandler();
+        </script>
     </body>
 </html>

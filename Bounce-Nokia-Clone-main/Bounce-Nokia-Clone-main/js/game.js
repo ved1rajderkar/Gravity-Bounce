@@ -28,7 +28,11 @@ class Game {
 		this.bg = new Image();
 		this.bg.src = 'assets/bg/level-select.png';
 		this.startCanvas;
+		this.controller = new Controller(this);
 		this.start();
+		
+		// Add resize handler
+        window.addEventListener('resize', () => this.handleResize());
 	}
 
 	loop() {
@@ -40,6 +44,8 @@ class Game {
 	}
 
 	update() {
+		this.controller.update();
+		
 		if (this.lives <= 0) {
 			this.gameWon = false;
 			this.isBig = false;
@@ -427,4 +433,24 @@ class Game {
 			}
 		}
 	}
+
+	handleResize() {
+        if (document.fullscreenElement) {
+            const container = document.getElementById(this.containerId);
+            const windowRatio = window.innerWidth / window.innerHeight;
+            const gameRatio = 640 / 360;
+
+            if (windowRatio > gameRatio) {
+                container.style.width = '100vh';
+                container.style.height = '56.25vh'; // 16:9 aspect ratio
+            } else {
+                container.style.width = '177.78vw'; // 16:9 aspect ratio
+                container.style.height = '100vw';
+            }
+        } else {
+            const container = document.getElementById(this.containerId);
+            container.style.width = '640px';
+            container.style.height = '360px';
+        }
+    }
 }
